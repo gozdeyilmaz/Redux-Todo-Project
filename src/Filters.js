@@ -11,10 +11,11 @@ const options = [
 class Filters extends Component {
     render() {
         console.log(this.props);
+        console.log("Active Filter is",this.props.activeFilter)
         return <div>
             {
                 options.map((option) => {
-                    return <div onClick={() => {
+                    return <div key={Math.random()} onClick={() => {
                         this.props.changeFilter(option.labelKey);
                     }}>
                         {option.label}

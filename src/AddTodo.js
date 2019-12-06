@@ -1,5 +1,6 @@
 import React from 'react';
-
+import {connect} from 'react-redux';
+import {addTodo,showing,hiding} from './actionCreators/actionCreaters';
 
 class AddTodo extends React.Component {
     constructor(props){
@@ -20,23 +21,59 @@ class AddTodo extends React.Component {
 
     addTodo(event){
         event.preventDefault();
-        this.props.onTodoAdd(this.state.inputVal);
+        this.props.addTodo(this.state.inputVal);
         this.setState({
             inputVal: ""
         });
+        this.showing();
+        setTimeout(()=>{
+          this.hiding();
+        },2500);
     }
 
+    showing(){
+      this.props.showing(this.state.inputVal);
+    }
+    hiding(){
+      this.props.hiding();
+    }
+
+
+
+
     render() {
-        const {onAdd} = this.props;
-        return <form
-            onSubmit={this.addTodo}>
-            <input
-                type="text"
-                value={this.state.inputVal}
-                onChange={this.changeInput} />
-            <button>Ekle</button>
-        </form>
+        return (
+          <div>
+            <form
+              onSubmit={this.addTodo}>
+              <input
+                  type="text"
+                  value={this.state.inputVal}
+                  onChange={this.changeInput} />
+              <button>Ekle</button>
+              {this.props.visible ? <h2 className="not">Eklendi</h2> : ""}
+          </form>
+
+        </div>
+      )
     }
 }
 
-export default AddTodo;
+const mapStateToProps = state => ({
+  visible: state.visible
+})
+
+
+const mapDispatchToProps =  dispatch => ({
+  addTodo: (newTodo) => {dispatch(addTodo({
+      content: newTodo,
+      id: Math.random(),
+      checked: false
+  }))},
+  showing: input => {dispatch(showing({
+    content: input
+  }))},
+  hiding: () => {dispatch(hiding())}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTodo);
